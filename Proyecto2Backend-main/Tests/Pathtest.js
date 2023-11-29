@@ -261,3 +261,74 @@ describe('Pruebas de rutas de pedidos', () => {
     expect(response.statusCode).toBe(404);
   });
 });
+
+describe('Pruebas de rutas de productos', () => {
+  let productoId; // Almacenará el ID del producto creado para su uso en pruebas posteriores
+
+  // POST /productos - Crear producto
+  test('POST /productos debería devolver un código 201 para producto creado', async () => {
+    const nuevoProducto = {
+      // Datos del nuevo producto
+    };
+    const response = await request(app).post('/productos').send(nuevoProducto);
+    expect(response.statusCode).toBe(201);
+    productoId = response.body._id;
+  });
+
+  // GET /productos - Obtener todos los productos
+  test('GET /productos debería devolver un código 200', async () => {
+    const response = await request(app).get('/productos');
+    expect(response.statusCode).toBe(200);
+  });
+
+  // GET /productos/:id - Obtener un producto específico
+  test('GET /productos/:id debería devolver un código 200 para un ID válido', async () => {
+    const response = await request(app).get(`/productos/${productoId}`);
+    expect(response.statusCode).toBe(200);
+  });
+
+  // PATCH /productos/:id - Actualizar un producto
+  test('PATCH /productos/:id debería devolver un código 200 para una actualización válida', async () => {
+    const cambiosProducto = {
+      // Cambios en el producto
+    };
+    const response = await request(app).patch(`/productos/${productoId}`).send(cambiosProducto);
+    expect(response.statusCode).toBe(200);
+  });
+
+  // DELETE /productos/:id - Eliminar un producto
+  test('DELETE /productos/:id debería devolver un código 204 para una eliminación válida', async () => {
+    const response = await request(app).delete(`/productos/${productoId}`);
+    expect(response.statusCode).toBe(204);
+  });
+
+    // POST /productos - Intento de crear un producto con datos inválidos
+  test('POST /productos debería devolver un código 400 para datos inválidos', async () => {
+    const productoInvalido = {
+      // Datos incompletos o inválidos
+    };
+    const response = await request(app).post('/productos').send(productoInvalido);
+    expect(response.statusCode).toBe(400);
+  });
+  
+  // GET /productos/:id - Intento de obtener un producto con ID inexistente
+  test('GET /productos/:id debería devolver un código 404 para un ID inexistente', async () => {
+    const response = await request(app).get('/productos/id_inexistente');
+    expect(response.statusCode).toBe(404);
+  });
+  
+  // PATCH /productos/:id - Intento de actualizar un producto con datos inválidos
+  test('PATCH /productos/:id debería devolver un código 400 para datos inválidos', async () => {
+    const cambiosInvalidos = {
+      // Cambios inválidos
+    };
+    const response = await request(app).patch(`/productos/${productoId}`).send(cambiosInvalidos);
+    expect(response.statusCode).toBe(400);
+  });
+  
+  // DELETE /productos/:id - Intento de eliminar un producto con ID inexistente
+  test('DELETE /productos/:id debería devolver un código 404 para un ID inexistente', async () => {
+    const response = await request(app).delete('/productos/id_inexistente');
+    expect(response.statusCode).toBe(404);
+  });
+});
