@@ -268,7 +268,14 @@ describe('Pruebas de rutas de productos', () => {
   // POST /productos - Crear producto
   test('POST /productos debería devolver un código 201 para producto creado', async () => {
     const nuevoProducto = {
-      // Datos del nuevo producto
+      restaurante: 123, // Suponiendo que es un ID numérico
+      nombre: 'Pizza Margarita',
+      categoria: ['Pizza', 'Italiana'],
+      descripcion: 'Pizza clásica con tomate y mozarella',
+      ingredientes: ['Tomate', 'Mozarella', 'Albahaca'],
+      disponibilidad: true,
+      precio: 15000,
+      foto: 'https://url-de-la-foto.com/pizza.jpg'
     };
     const response = await request(app).post('/productos').send(nuevoProducto);
     expect(response.statusCode).toBe(201);
@@ -290,7 +297,14 @@ describe('Pruebas de rutas de productos', () => {
   // PATCH /productos/:id - Actualizar un producto
   test('PATCH /productos/:id debería devolver un código 200 para una actualización válida', async () => {
     const cambiosProducto = {
-      // Cambios en el producto
+      restaurante: 123, // Suponiendo que es un ID numérico
+      nombre: 'Pizza Margarita',
+      categoria: ['Pizza', 'Italiana'],
+      descripcion: 'Pizza clásica con tomate',
+      ingredientes: ['Tomate', 'Albahaca'],
+      disponibilidad: true,
+      precio: 15000,
+      foto: 'https://url-de-la-foto.com/pizza.jpg'
     };
     const response = await request(app).patch(`/productos/${productoId}`).send(cambiosProducto);
     expect(response.statusCode).toBe(200);
@@ -305,7 +319,13 @@ describe('Pruebas de rutas de productos', () => {
     // POST /productos - Intento de crear un producto con datos inválidos
   test('POST /productos debería devolver un código 400 para datos inválidos', async () => {
     const productoInvalido = {
-      // Datos incompletos o inválidos
+      restaurante: 123,
+      categoria: ['Pizza', 'Italiana'],
+      descripcion: '',
+      ingredientes: [],
+      disponibilidad: true,
+      precio: -20, // Precio inválido
+      foto: 'no-url'
     };
     const response = await request(app).post('/productos').send(productoInvalido);
     expect(response.statusCode).toBe(400);
@@ -320,7 +340,7 @@ describe('Pruebas de rutas de productos', () => {
   // PATCH /productos/:id - Intento de actualizar un producto con datos inválidos
   test('PATCH /productos/:id debería devolver un código 400 para datos inválidos', async () => {
     const cambiosInvalidos = {
-      // Cambios inválidos
+      precio: -100
     };
     const response = await request(app).patch(`/productos/${productoId}`).send(cambiosInvalidos);
     expect(response.statusCode).toBe(400);
