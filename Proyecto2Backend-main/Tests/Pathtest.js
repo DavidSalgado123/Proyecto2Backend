@@ -113,144 +113,73 @@ describe("Pruebas de rutas de usuarios", () => {
   });
 });
 
-describe('Pruebas de rutas de productos', () => {
-  let productoId; // Almacenará el ID del producto creado para su uso en pruebas posteriores
+describe('Pruebas de rutas de restaurantes', () => {
+  let restauranteId; // Almacenará el ID del restaurante creado para su uso en pruebas posteriores
 
-  // POST /productos - Crear producto
-  test('POST /productos debería devolver un código 201 para producto creado', async () => {
-    const nuevoProducto = {
-      // Datos del nuevo producto
+  // POST /restaurantes - Crear restaurante
+  test('POST /restaurantes debería devolver un código 201 para restaurante creado', async () => {
+    const nuevoRestaurante = {
+      // Datos del nuevo restaurante
     };
-    const response = await request(app).post('/productos').send(nuevoProducto);
+    const response = await request(app).post('/restaurantes').send(nuevoRestaurante);
     expect(response.statusCode).toBe(201);
-    productoId = response.body._id;
+    restauranteId = response.body._id;
   });
 
-  // GET /productos - Obtener todos los productos
-  test('GET /productos debería devolver un código 200', async () => {
-    const response = await request(app).get('/productos');
+  // GET /restaurantes - Obtener todos los restaurantes
+  test('GET /restaurantes debería devolver un código 200', async () => {
+    const response = await request(app).get('/restaurantes');
     expect(response.statusCode).toBe(200);
   });
 
-  // GET /productos/:id - Obtener un producto específico
-  test('GET /productos/:id debería devolver un código 200 para un ID válido', async () => {
-    const response = await request(app).get(`/productos/${productoId}`);
+  // GET /restaurantes/:id - Obtener un restaurante específico
+  test('GET /restaurantes/:id debería devolver un código 200 para un ID válido', async () => {
+    const response = await request(app).get(`/restaurantes/${restauranteId}`);
     expect(response.statusCode).toBe(200);
   });
 
-  // PATCH /productos/:id - Actualizar un producto
-  test('PATCH /productos/:id debería devolver un código 200 para una actualización válida', async () => {
-    const cambiosProducto = {
-      // Cambios en el producto
+  // PATCH /restaurantes/:id - Actualizar un restaurante
+  test('PATCH /restaurantes/:id debería devolver un código 200 para una actualización válida', async () => {
+    const cambiosRestaurante = {
+      // Cambios en el restaurante
     };
-    const response = await request(app).patch(`/productos/${productoId}`).send(cambiosProducto);
+    const response = await request(app).patch(`/restaurantes/${restauranteId}`).send(cambiosRestaurante);
     expect(response.statusCode).toBe(200);
   });
 
-  // DELETE /productos/:id - Eliminar un producto
-  test('DELETE /productos/:id debería devolver un código 204 para una eliminación válida', async () => {
-    const response = await request(app).delete(`/productos/${productoId}`);
+  // DELETE /restaurantes/:id - Eliminar un restaurante
+  test('DELETE /restaurantes/:id debería devolver un código 204 para una eliminación válida', async () => {
+    const response = await request(app).delete(`/restaurantes/${restauranteId}`);
     expect(response.statusCode).toBe(204);
   });
 
-    // POST /productos - Intento de crear un producto con datos inválidos
-  test('POST /productos debería devolver un código 400 para datos inválidos', async () => {
-    const productoInvalido = {
+  // POST /restaurantes - Intento de crear un restaurante con datos inválidos
+  test('POST /restaurantes debería devolver un código 400 para datos inválidos', async () => {
+    const restauranteInvalido = {
       // Datos incompletos o inválidos
     };
-    const response = await request(app).post('/productos').send(productoInvalido);
+    const response = await request(app).post('/restaurantes').send(restauranteInvalido);
     expect(response.statusCode).toBe(400);
   });
   
-  // GET /productos/:id - Intento de obtener un producto con ID inexistente
-  test('GET /productos/:id debería devolver un código 404 para un ID inexistente', async () => {
-    const response = await request(app).get('/productos/id_inexistente');
+  // GET /restaurantes/:id - Intento de obtener un restaurante con ID inexistente
+  test('GET /restaurantes/:id debería devolver un código 404 para un ID inexistente', async () => {
+    const response = await request(app).get('/restaurantes/id_inexistente');
     expect(response.statusCode).toBe(404);
   });
   
-  // PATCH /productos/:id - Intento de actualizar un producto con datos inválidos
-  test('PATCH /productos/:id debería devolver un código 400 para datos inválidos', async () => {
+  // PATCH /restaurantes/:id - Intento de actualizar un restaurante con datos inválidos
+  test('PATCH /restaurantes/:id debería devolver un código 400 para datos inválidos', async () => {
     const cambiosInvalidos = {
       // Cambios inválidos
     };
-    const response = await request(app).patch(`/productos/${productoId}`).send(cambiosInvalidos);
+    const response = await request(app).patch(`/restaurantes/${restauranteId}`).send(cambiosInvalidos);
     expect(response.statusCode).toBe(400);
   });
   
-  // DELETE /productos/:id - Intento de eliminar un producto con ID inexistente
-  test('DELETE /productos/:id debería devolver un código 404 para un ID inexistente', async () => {
-    const response = await request(app).delete('/productos/id_inexistente');
-    expect(response.statusCode).toBe(404);
-  });
-});
-
-describe('Pruebas de rutas de pedidos', () => {
-  let pedidoId; // Almacenará el ID del pedido creado para su uso en pruebas posteriores
-
-  // POST /pedidos - Crear pedido
-  test('POST /pedidos debería devolver un código 201 para pedido creado', async () => {
-    const nuevoPedido = {
-      // Datos del nuevo pedido
-    };
-    const response = await request(app).post('/pedidos').send(nuevoPedido);
-    expect(response.statusCode).toBe(201);
-    pedidoId = response.body._id;
-  });
-
-  // GET /pedidos - Obtener todos los pedidos
-  test('GET /pedidos debería devolver un código 200', async () => {
-    const response = await request(app).get('/pedidos');
-    expect(response.statusCode).toBe(200);
-  });
-
-  // GET /pedidos/:id - Obtener un pedido específico
-  test('GET /pedidos/:id debería devolver un código 200 para un ID válido', async () => {
-    const response = await request(app).get(`/pedidos/${pedidoId}`);
-    expect(response.statusCode).toBe(200);
-  });
-
-  // PATCH /pedidos/:id - Actualizar un pedido
-  test('PATCH /pedidos/:id debería devolver un código 200 para una actualización válida', async () => {
-    const cambiosPedido = {
-      // Cambios en el pedido
-    };
-    const response = await request(app).patch(`/pedidos/${pedidoId}`).send(cambiosPedido);
-    expect(response.statusCode).toBe(200);
-  });
-
-  // DELETE /pedidos/:id - Eliminar un pedido
-  test('DELETE /pedidos/:id debería devolver un código 204 para una eliminación válida', async () => {
-    const response = await request(app).delete(`/pedidos/${pedidoId}`);
-    expect(response.statusCode).toBe(204);
-  });
-
-    // POST /pedidos - Intento de crear un pedido con datos inválidos
-  test('POST /pedidos debería devolver un código 400 para datos inválidos', async () => {
-    const pedidoInvalido = {
-      // Datos incompletos o inválidos
-    };
-    const response = await request(app).post('/pedidos').send(pedidoInvalido);
-    expect(response.statusCode).toBe(400);
-  });
-  
-  // GET /pedidos/:id - Intento de obtener un pedido con ID inexistente
-  test('GET /pedidos/:id debería devolver un código 404 para un ID inexistente', async () => {
-    const response = await request(app).get('/pedidos/id_inexistente');
-    expect(response.statusCode).toBe(404);
-  });
-  
-  // PATCH /pedidos/:id - Intento de actualizar un pedido con datos inválidos
-  test('PATCH /pedidos/:id debería devolver un código 400 para datos inválidos', async () => {
-    const cambiosInvalidos = {
-      // Cambios inválidos
-    };
-    const response = await request(app).patch(`/pedidos/${pedidoId}`).send(cambiosInvalidos);
-    expect(response.statusCode).toBe(400);
-  });
-  
-  // DELETE /pedidos/:id - Intento de eliminar un pedido con ID inexistente
-  test('DELETE /pedidos/:id debería devolver un código 404 para un ID inexistente', async () => {
-    const response = await request(app).delete('/pedidos/id_inexistente');
+  // DELETE /restaurantes/:id - Intento de eliminar un restaurante con ID inexistente
+  test('DELETE /restaurantes/:id debería devolver un código 404 para un ID inexistente', async () => {
+    const response = await request(app).delete('/restaurantes/id_inexistente');
     expect(response.statusCode).toBe(404);
   });
 });
