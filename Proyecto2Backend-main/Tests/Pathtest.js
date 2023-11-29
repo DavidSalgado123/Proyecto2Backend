@@ -54,23 +54,61 @@ describe("Pruebas de rutas de usuarios", () => {
 
   // Endpoint PATCH /usuarios/:id
   test("PATCH /usuarios/:id debería devolver un código 200", async () => {
-    const idUsuario = "ID_DEL_USUARIO_A_MODIFICAR";
     const cambiosUsuario = {
       /* ...datos de usuario para modificar... */
     };
     const response = await request(app)
-      .patch(`/usuarios/${idUsuario}`)
+      .patch(`/usuarios/${userid}`) // Usa el ID del usuario creado
       .send(cambiosUsuario)
-      .set("Authorization", "Bearer tuTokenDeAutenticacion");
+      .set("Authorization", `Bearer ${token}`);
     expect(response.statusCode).toBe(200);
   });
 
   // Endpoint DELETE /usuarios/:id
-  test("DELETE /usuarios/:id debería devolver un código 204", async () => {
-    const idUsuario = "ID_DEL_USUARIO_A_ELIMINAR";
+  test("DELETE /usuarios/:id debería devolver un código 204 para usuario eliminado", async () => {
     const response = await request(app)
-      .delete(`/usuarios/${idUsuario}`)
-      .set("Authorization", "Bearer tuTokenDeAutenticacion");
+      .delete(`/usuarios/${userid}`) // Usa el ID del usuario creado
+      .set("Authorization", `Bearer ${token}`);
     expect(response.statusCode).toBe(204);
+  });
+
+  test("POST /usuarios debería devolver un código 400 para datos inválidos", async () => {
+  const usuarioInvalido = {
+    nombre: "", // Nombre vacío, suponiendo que es un campo obligatorio
+    // Otros campos pueden ser omitidos o inválidos según tu esquema
+  };
+  const response = await request(app)
+    .post("/usuarios")
+    .send(usuarioInvalido)
+    .set("Authorization", `Bearer ${token}`);
+  expect(response.statusCode).toBe(400); 
+  });
+
+  test("PATCH /usuarios/:id debería devolver un código 404 para ID inexistente", async () => {
+  const cambiosUsuario = {
+    nombre: "Nombre Actualizado",
+    // Otros cambios...
+  };
+  const idInexistente = "id_inexistente";
+  const response = await request(app)
+    .patch(`/usuarios/${idInexistente}`)
+    .send(cambiosUsuario)
+    .set("Authorization", `Bearer ${token}`);
+  expect(response.statusCode).toBe(404); 
+  });
+
+  test("DELETE /usuarios/:id debería devolver un código 404 para ID inexistente", async () => {
+  const idInexistente = "id_inexistente";
+  const response = await request(app)
+    .delete(`/usuarios/${idInexistente}`)
+    .set("Authorization", `Bearer ${token}`);
+  expect(response.statusCode).toBe(404); 
+  });
+
+  test("GET /usuarios debería devolver un código 401 para token inválido", async () => {
+  const response = await request(app)
+    .get("/usuarios")
+    .set("Authorization", `Bearer token_invalido`);
+  expect(response.statusCode).toBe(401); 
   });
 });
