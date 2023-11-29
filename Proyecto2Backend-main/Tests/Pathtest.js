@@ -119,7 +119,26 @@ describe('Pruebas de rutas de restaurantes', () => {
   // POST /restaurantes - Crear restaurante
   test('POST /restaurantes debería devolver un código 201 para restaurante creado', async () => {
     const nuevoRestaurante = {
-      // Datos del nuevo restaurante
+      nombre: 'La Pizzería',
+      categorias: ['Pizza', 'Italiana'],
+      DomiciliariosPropios: true,
+      costoEnvioPropio: 5000,
+      tiempoEstimadoEnvio: '30 mins',
+      administrador: 'id_administrador',
+      calificacion: 4,
+      ubicaciones: [{
+        direccion: 'Calle 123',
+        rangoServicioMaximo: 10
+      }],
+      menu: {
+        categorias: ['Pizzas', 'Bebidas'],
+        platos: [{
+          nombre: 'Pizza Margarita',
+          descripcion: 'Pizza clásica con tomate y mozarella',
+          precio: 15000
+        }]
+      },
+      habilitado: true
     };
     const response = await request(app).post('/restaurantes').send(nuevoRestaurante);
     expect(response.statusCode).toBe(201);
@@ -141,7 +160,8 @@ describe('Pruebas de rutas de restaurantes', () => {
   // PATCH /restaurantes/:id - Actualizar un restaurante
   test('PATCH /restaurantes/:id debería devolver un código 200 para una actualización válida', async () => {
     const cambiosRestaurante = {
-      // Cambios en el restaurante
+      nombre: 'La Pizzería Deluxe',
+      costoEnvioPropio: 6000
     };
     const response = await request(app).patch(`/restaurantes/${restauranteId}`).send(cambiosRestaurante);
     expect(response.statusCode).toBe(200);
@@ -156,7 +176,29 @@ describe('Pruebas de rutas de restaurantes', () => {
   // POST /restaurantes - Intento de crear un restaurante con datos inválidos
   test('POST /restaurantes debería devolver un código 400 para datos inválidos', async () => {
     const restauranteInvalido = {
-      // Datos incompletos o inválidos
+      nombre: '', // Nombre vacío, siendo un campo obligatorio
+  categorias: ['Categoría no válida'], 
+  DomiciliariosPropios: true, 
+  costoEnvioPropio: -100, // 
+  tiempoEstimadoEnvio: '', // 
+  calificacion: 6, 
+  ubicaciones: [ 
+    {
+      direccion: '',
+      rangoServicioMaximo: -5 
+    }
+  ],
+  menu: {
+    categorias: ['Pizzas'], 
+    platos: [
+      {
+        nombre: 'Pizza con nombre extremadamente largo que excede el máximo permitido',
+        descripcion: 'Una descripción que es demasiado larga y supera el límite de caracteres permitidos para la descripción de un plato en el menú.',
+        precio: -200 
+      }
+    ]
+  },
+  habilitado: true
     };
     const response = await request(app).post('/restaurantes').send(restauranteInvalido);
     expect(response.statusCode).toBe(400);
@@ -171,7 +213,7 @@ describe('Pruebas de rutas de restaurantes', () => {
   // PATCH /restaurantes/:id - Intento de actualizar un restaurante con datos inválidos
   test('PATCH /restaurantes/:id debería devolver un código 400 para datos inválidos', async () => {
     const cambiosInvalidos = {
-      // Cambios inválidos
+      calificacion: 6,
     };
     const response = await request(app).patch(`/restaurantes/${restauranteId}`).send(cambiosInvalidos);
     expect(response.statusCode).toBe(400);
@@ -201,8 +243,17 @@ describe('Pruebas de rutas de pedidos', () => {
       },
       valorTotal: 50000,
       productos: [
-        // Lista de productos
-      ],
+    {
+      nombre: 'Pizza Margarita',
+      descripcion: 'Pizza clásica con tomate, mozarella y albahaca',
+      precio: 20000
+    },
+    {
+      nombre: 'Gaseosa',
+      descripcion: 'Bebida gaseosa de 500 ml',
+      precio: 3000
+    }
+  ],
       habilitado: true
     };
     const response = await request(app).post('/pedidos').send(nuevoPedido);
@@ -219,7 +270,29 @@ describe('Pruebas de rutas de pedidos', () => {
   // PATCH /pedidos/:id - Actualizar un pedido
   test('PATCH /pedidos/:id debería devolver un código 200 para una actualización válida', async () => {
     const cambiosPedido = {
-      // Cambios en el pedido
+      restaurante: 'Restaurante Ejemplo',
+      estadosPedido: ['Recibido, Preparando'],
+      tiempoEstimadoLlegada: '30 mins',
+      calificacionUsuario: 4,
+      domiciliario: {
+        nombre: 'Juan',
+        telefono: '1234567890',
+        foto: 'url_a_la_foto'
+      },
+      valorTotal: 50000,
+      productos: [
+    {
+      nombre: 'Pizza Margarita',
+      descripcion: 'Pizza clásica con tomate, mozarella y albahaca',
+      precio: 20000
+    },
+    {
+      nombre: 'Gaseosa',
+      descripcion: 'Bebida gaseosa de 500 ml',
+      precio: 3000
+    }
+  ],
+      habilitado: true
     };
     const response = await request(app).patch(`/pedidos/${pedidoId}`).send(cambiosPedido);
     expect(response.statusCode).toBe(200);
@@ -234,7 +307,24 @@ describe('Pruebas de rutas de pedidos', () => {
     // POST /pedidos - Intento de crear un pedido con datos inválidos
   test('POST /pedidos debería devolver un código 400 para datos inválidos', async () => {
     const pedidoInvalido = {
-      // Datos incompletos o inválidos
+      restaurante: '', 
+  estadosPedido: [], 
+  tiempoEstimadoLlegada: '', 
+  // Falta el campo 'calificacionUsuario'
+  domiciliario: {
+    nombre: '', // Campo obligatorio vacío
+    telefono: 'telefono no válido', 
+    foto: 'url no válida' 
+  },
+  valorTotal: -100, 
+  productos: [
+    {
+      nombre: 'Producto con nombre extremadamente largo que excede el máximo permitido',
+      descripcion: 'Descripción demasiado larga',
+      precio: 0 // Valor no permitido (debe ser mínimo 1)
+    }
+  ],
+  habilitado: true
     };
     const response = await request(app).post('/pedidos').send(pedidoInvalido);
     expect(response.statusCode).toBe(400);
@@ -249,7 +339,24 @@ describe('Pruebas de rutas de pedidos', () => {
   // PATCH /pedidos/:id - Intento de actualizar un pedido con datos inválidos
   test('PATCH /pedidos/:id debería devolver un código 400 para datos inválidos', async () => {
     const cambiosInvalidos = {
-      // Cambios inválidos
+      restaurante: 123, 
+  estadosPedido: ['Estado no válido'], 
+  tiempoEstimadoLlegada: 'tiempo no válido', 
+  calificacionUsuario: 6, 
+  domiciliario: {
+    nombre: '', 
+    telefono: 'telefono no válido', 
+    foto: 'url no válida' 
+  },
+  valorTotal: -500, 
+  productos: [
+    {
+      nombre: '', 
+      descripcion: 'Descripción demasiado corta', 
+      precio: 0 
+    }
+  ],
+  habilitado: 'no booleano'
     };
     const response = await request(app).patch(`/pedidos/${pedidoId}`).send(cambiosInvalidos);
     expect(response.statusCode).toBe(400);
